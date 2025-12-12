@@ -1,0 +1,31 @@
+! Generated Configuration for {{ hostname }}
+!
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname {{ hostname }}
+ip domain-name {{ domain_name }}
+!
+! VLAN Configuration
+{% for vlan in vlans %}
+vlan {{ vlan.id }}
+ name {{ vlan.name }}
+!
+{% endfor %}
+!
+! Interface Configuration
+{% for int_name, int_data in interfaces.items() %}
+interface {{ int_name }}
+ description {{ int_data.description }}
+ {% if int_data.mode == 'trunk' %}
+ switchport mode trunk
+ switchport trunk native vlan {{ int_data.native_vlan }}
+ {% else %}
+ switchport mode access
+ switchport access vlan {{ int_data.vlan }}
+ {% endif %}
+ no shutdown
+!
+{% endfor %}
+!
+end

@@ -1,0 +1,20 @@
+hostname: switch_01
+domain_name: softblitz.local
+
+vlans:
+  - id: 10
+    name: MANAGEMENT
+  - id: 20
+    name: USER_DATA
+  - id: 99
+    name: NATIVE_VLAN
+
+interfaces:
+  GigabitEthernet1/0/1:
+    description: "Uplink to Core"
+    mode: trunk
+    native_vlan: 99
+  GigabitEthernet1/0/2:
+    description: "Access Port - PC"
+    mode: access
+    vlan: 20
