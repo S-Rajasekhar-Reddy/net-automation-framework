@@ -1,0 +1,7 @@
+---
+all_devices:
+  - host: test.rebex.net
+    username: demo
+    password: password
+    device_type: linux
+    port: 22
