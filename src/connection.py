@@ -61,19 +61,19 @@ class DeviceManager:
 
         try:
             CMD_MAP = {
-            "cisco_ios": "show running-config",
-            "cisco_xr": "show running-config",
-            "juniper_junos": "show configuration",
-            "arista_eos": "show running-config",
-            "linux": "cat /etc/os-release"  # For our test lab
-        }
-
-        # Get the command based on device_type (default to cisco_ios if unknown)
-        device_type = self.device_dict.get('device_type', 'cisco_ios')
-        command = CMD_MAP.get(device_type, "show running-config")
-
-        print(f"💾 Backing up {self.device_dict['host']} using '{command}'...")
-
+                "cisco_ios": "show running-config",
+                "cisco_xr": "show running-config",
+                "juniper_junos": "show configuration",
+                "arista_eos": "show running-config",
+                "linux": "cat /etc/os-release"  # For our test lab
+            }
+        
+            # Get the command based on device_type (default to cisco_ios if unknown)
+            device_type = self.device_dict.get('device_type', 'cisco_ios')
+            command = CMD_MAP.get(device_type, "show running-config")
+    
+            print(f"💾 Backing up {self.device_dict['host']} using '{command}'...")
+    
             config_output = self.send_command(command)
 
             if not config_output or "denied" in config_output.lower():
