@@ -1,5 +1,6 @@
 import logging
 from netmiko import ConnectHandler, NetmikoTimeoutException, NetmikoAuthenticationException
+from utils import save_to_file
 
 # This creates a file that tracks what your script did
 logging.basicConfig(
@@ -51,3 +52,32 @@ class DeviceManager:
         if self.connection:
             self.connection.disconnect()
             logging.info(f"Disconnected from {self.device_dict['host']}")
+    
+    def backup(self):
+        """
+        Retrieves the running configuration and saves it to a file.
+        """
+        if not self.connection:
+            return False
+
+        try:
+            # Just for test:
+            if self.device_dict['device_type'] == 'cisco_ios':
+                command = "show running-config"
+            else:
+                command = "cat /etc/os-release"
+            
+            print(f"💾 Backing up {self.device_dict['host']}...")
+            
+            # Send command
+            config_output = self.send_command(command)
+            
+            # Save to file using our new utility
+            if config_output:
+                saved_path = save_to_file(self.device_dict['host'], config_output)
+                logging.info(f"Backup saved to {saved_path}")
+                return saved_path
+            
+        except Exception as e:
+            logging.error(f"Backup failed: {e}")
+            return False
