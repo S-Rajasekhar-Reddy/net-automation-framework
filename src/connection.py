@@ -60,12 +60,19 @@ class DeviceManager:
             return False
 
         try:
-            if self.device_dict['device_type'] == 'cisco_ios':
-                command = "show running-config"
-            else:
-                command = "uname -a"
+            CMD_MAP = {
+            "cisco_ios": "show running-config",
+            "cisco_xr": "show running-config",
+            "juniper_junos": "show configuration",
+            "arista_eos": "show running-config",
+            "linux": "cat /etc/os-release"  # For our test lab
+        }
 
-            print(f"💾 Backing up {self.device_dict['host']}...")
+        # Get the command based on device_type (default to cisco_ios if unknown)
+        device_type = self.device_dict.get('device_type', 'cisco_ios')
+        command = CMD_MAP.get(device_type, "show running-config")
+
+        print(f"💾 Backing up {self.device_dict['host']} using '{command}'...")
 
             config_output = self.send_command(command)
 
@@ -81,6 +88,13 @@ class DeviceManager:
         except Exception as e:
             logging.error("Backup failed: %s", e)
             return False
+    
+    def get_state(self, command="show ip route"):
+        """Runs a command to capture state (default: routing table)."""
+        if not self.connection:
+            return None
+        print(f"📸 Capturing state for {self.device_dict['host']}...")
+        return self.send_command(command)
 
     def disconnect(self):
         """Closes the SSH session."""
