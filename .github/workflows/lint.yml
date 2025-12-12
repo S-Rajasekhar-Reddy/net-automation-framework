@@ -3,7 +3,7 @@ name: Python Quality Check
 # Trigger the workflow on push or PR to these branches
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: [ "main", "dev", "feature/**" ]
   pull_request:
     branches: [ "main", "dev" ]
 
@@ -31,4 +31,5 @@ jobs:
     # We ignore the 'logs' folder and enforce a passing score of 7/10
     - name: Analysing code with Pylint
       run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)/src
         pylint --fail-under=7.0 src/
